@@ -77,7 +77,6 @@ activities = {
     }
 }
 
-
 @app.get("/")
 def root():
     return RedirectResponse(url="/static/index.html")
@@ -130,3 +129,29 @@ def unregister_from_activity(activity_name: str, email: str):
     # Remove student
     activity["participants"].remove(email)
     return {"message": f"Unregistered {email} from {activity_name}"}
+
+from typing import Optional
+
+@app.get("/students/{student_id}")
+def get_student_details(student_id: str):
+    """Retrieve detailed information about a student by their unique ID."""
+    student_data = {
+        "michael@mergington.edu": {
+            "name": "Michael",
+            "academic_records": "A",
+            "financial_status": "Paid",
+            "extracurriculars": ["Chess Club"]
+        },
+        "emma@mergington.edu": {
+            "name": "Emma",
+            "academic_records": "B+",
+            "financial_status": "Due",
+            "extracurriculars": ["Programming Class"]
+        }
+    }
+
+    # Validate student exists
+    if student_id not in student_data:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    return student_data[student_id]
